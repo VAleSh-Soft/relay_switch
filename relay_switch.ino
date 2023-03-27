@@ -18,23 +18,33 @@ const uint8_t RELAY_6_PIN = 5;
 const uint8_t RELAY_7_PIN = 6;
 const uint8_t RELAY_8_PIN = 7;
 
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328PB__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega168P__) || defined(__AVR_ATmega8__)
+// ==== пины кнопок ==================================
+const uint8_t BTN_1_PIN = 9;
+const uint8_t BTN_2_PIN = 10;
+const uint8_t BTN_3_PIN = 11;
+const uint8_t BTN_4_PIN = 12;
+const uint8_t BTN_5_PIN = A0;
+const uint8_t BTN_6_PIN = A1;
+const uint8_t BTN_7_PIN = A2;
+const uint8_t BTN_8_PIN = A3;
+// ==== пин управления адресными светодиодами ========
+const uint8_t LEDS_DATA_PIN = A4;
+#elif defined(__AVR_ATtiny48__) || defined(__AVR_ATtiny88__)
 // ==== пины кнопок ==================================
 const uint8_t BTN_1_PIN = 9;
 const uint8_t BTN_2_PIN = 10;
 const uint8_t BTN_3_PIN = 11;
 const uint8_t BTN_4_PIN = 12;
 const uint8_t BTN_5_PIN = 13;
-const uint8_t BTN_6_PIN = 14;   // A0;
-const uint8_t BTN_7_PIN = 15;   // A1;
-const uint8_t BTN_8_PIN = 16;   // A2;
-const uint8_t BTN_OFF_PIN = 17; // A3;
-
+const uint8_t BTN_6_PIN = 14;
+const uint8_t BTN_7_PIN = 15;
+const uint8_t BTN_8_PIN = 16;
 // ==== пин управления адресными светодиодами ========
-const uint8_t LEDS_DATA_PIN = 23;
+const uint8_t LEDS_DATA_PIN = 17; // A6;
+#endif
 
-// ===================================================
-// shButton btn_off(BTN_OFF_PIN);
-
+// ==== массив кнопок ================================
 shButton btns[] =
     {
         (shButton){BTN_1_PIN},
@@ -46,22 +56,27 @@ shButton btns[] =
         (shButton){BTN_7_PIN},
         (shButton){BTN_8_PIN}};
 
+// ==== массив пинов реле ============================
 uint8_t relay_pin[] = {RELAY_1_PIN, RELAY_2_PIN, RELAY_3_PIN, RELAY_4_PIN,
                        RELAY_5_PIN, RELAY_6_PIN, RELAY_7_PIN, RELAY_8_PIN};
 
-CRGB leds[8]; // массив адресных светодиодов-индикаторов каналов
+CRGB leds[8]; // массив адресных светодиодов - индикаторов каналов
 
 // ===================================================
+
+// считывание данных из EEPROM
 bool readData(uint8_t _index)
 {
   return ((bool)EEPROM.read(i_data + _index));
 }
 
+// запись данных в EEPROM
 void writeData(uint8_t _index, bool _data)
 {
   EEPROM.update(i_data + _index, (byte)_data);
 }
 
+// управление светодиодами
 void setLeds()
 {
   for (uint8_t i = 0; i < 8; i++)
@@ -69,7 +84,7 @@ void setLeds()
     CRGB color = CRGB::Black;
     if (readData(i))
     {
-      color = (digitalRead(relay_pin[i])) ? CRGB::Green : CRGB::Red;
+      color = (digitalRead(relay_pin[i]) == control_level) ? CRGB::Green : CRGB::Red;
     }
     leds[i] = color;
   }
@@ -78,13 +93,18 @@ void setLeds()
 
 void setup()
 {
+  // настройка кнопок и реле
   for (uint8_t i = 0; i < 8; i++)
   {
     digitalWrite(relay_pin[i], !control_level);
     pinMode(relay_pin[i], OUTPUT);
     btns[i].setVirtualClickOn();
+    btns[i].setLongClickMode(LCM_ONLYONCE);
+    // т.к. двойной клик не используется, уменьшаем его интервал, чтобы ускорить реакцию на одиночный клик
+    btns[i].setTimeoutOfDblClick(100);
   }
 
+  // настройка светодиодов
   FastLED.addLeds<WS2812B, LEDS_DATA_PIN, GRB>(leds, 8);
   FastLED.setBrightness(5);
   setLeds();
@@ -115,7 +135,7 @@ void loop()
     }
   }
 
-  // управление светодиодами
+  // управление светодиодами - один раз в 100 мс
   static uint32_t timer = 0;
   if (millis() - timer >= 100)
   {
