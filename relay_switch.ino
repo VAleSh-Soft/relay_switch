@@ -5,6 +5,9 @@
 // ==== управляющий уровень реле =====================
 const uint8_t control_level = HIGH; // если реле управляются низким уровнем, установите LOW вместо HIGH
 
+// ==== тип кнопки ===================================
+#define USE_TOUCH_BUTTON // расскомментируйте, если используете сенсорные кнопки
+
 // ==== индекс в EEPROM для хранения настроек ========
 uint8_t i_data = 0x0a;
 
@@ -45,16 +48,22 @@ const uint8_t LEDS_DATA_PIN = 17; // A6;
 #endif
 
 // ==== массив кнопок ================================
+#ifdef USE_TOUCH_BUTTON
+uint8_t input_type = PULL_DOWN;
+#else
+uint8_t input_type = PULL_UP;
+#endif
+
 shButton btns[] =
     {
-        (shButton){BTN_1_PIN},
-        (shButton){BTN_2_PIN},
-        (shButton){BTN_3_PIN},
-        (shButton){BTN_4_PIN},
-        (shButton){BTN_5_PIN},
-        (shButton){BTN_6_PIN},
-        (shButton){BTN_7_PIN},
-        (shButton){BTN_8_PIN}};
+        (shButton){BTN_1_PIN, input_type},
+        (shButton){BTN_2_PIN, input_type},
+        (shButton){BTN_3_PIN, input_type},
+        (shButton){BTN_4_PIN, input_type},
+        (shButton){BTN_5_PIN, input_type},
+        (shButton){BTN_6_PIN, input_type},
+        (shButton){BTN_7_PIN, input_type},
+        (shButton){BTN_8_PIN, input_type}};
 
 // ==== массив пинов реле ============================
 uint8_t relay_pin[] = {RELAY_1_PIN, RELAY_2_PIN, RELAY_3_PIN, RELAY_4_PIN,
@@ -102,6 +111,10 @@ void setup()
     btns[i].setLongClickMode(LCM_ONLYONCE);
     // т.к. двойной клик не используется, уменьшаем его интервал, чтобы ускорить реакцию на одиночный клик
     btns[i].setTimeoutOfDblClick(100);
+#ifdef USE_TOUCH_BUTTON
+    // для сенсорных кнопок установить нулевой антидребезг
+    btns[i].setTimeoutOfDebounce(0);
+#endif
   }
 
   // настройка светодиодов
