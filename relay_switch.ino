@@ -11,40 +11,48 @@ const uint8_t control_level = HIGH; // если реле управляются 
 // ==== индекс в EEPROM для хранения настроек ========
 uint8_t i_data = 0x0a;
 
-// ==== пины реле ====================================
-const uint8_t RELAY_1_PIN = 0;
-const uint8_t RELAY_2_PIN = 1;
-const uint8_t RELAY_3_PIN = 2;
-const uint8_t RELAY_4_PIN = 3;
-const uint8_t RELAY_5_PIN = 4;
-const uint8_t RELAY_6_PIN = 5;
-const uint8_t RELAY_7_PIN = 6;
-const uint8_t RELAY_8_PIN = 7;
-
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328PB__) || defined(__AVR_ATmega328__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega168P__) || defined(__AVR_ATmega8__)
 // ==== пины кнопок ==================================
 const uint8_t BTN_1_PIN = 9;
-const uint8_t BTN_2_PIN = 10;
-const uint8_t BTN_3_PIN = 11;
-const uint8_t BTN_4_PIN = 12;
-const uint8_t BTN_5_PIN = A0;
-const uint8_t BTN_6_PIN = A1;
-const uint8_t BTN_7_PIN = A2;
-const uint8_t BTN_8_PIN = A3;
+const uint8_t BTN_2_PIN = 8;
+const uint8_t BTN_3_PIN = 7;
+const uint8_t BTN_4_PIN = 6;
+const uint8_t BTN_5_PIN = 5;
+const uint8_t BTN_6_PIN = 4;
+const uint8_t BTN_7_PIN = 3;
+const uint8_t BTN_8_PIN = 2;
+// ==== пины реле ====================================
+const uint8_t RELAY_1_PIN = 10;
+const uint8_t RELAY_2_PIN = 11;
+const uint8_t RELAY_3_PIN = 12;
+const uint8_t RELAY_4_PIN = 13;
+const uint8_t RELAY_5_PIN = 14; // A0
+const uint8_t RELAY_6_PIN = 15; // A1
+const uint8_t RELAY_7_PIN = 16; // A2
+const uint8_t RELAY_8_PIN = 17; // A3
 // ==== пин управления адресными светодиодами ========
-const uint8_t LEDS_DATA_PIN = A4;
+const uint8_t LEDS_DATA_PIN = 18 // A4;
 #elif defined(__AVR_ATtiny48__) || defined(__AVR_ATtiny88__)
 // ==== пины кнопок ==================================
-const uint8_t BTN_1_PIN = 9;
-const uint8_t BTN_2_PIN = 10;
-const uint8_t BTN_3_PIN = 11;
-const uint8_t BTN_4_PIN = 12;
-const uint8_t BTN_5_PIN = 13;
-const uint8_t BTN_6_PIN = 14;
-const uint8_t BTN_7_PIN = 15;
-const uint8_t BTN_8_PIN = 16;
+const uint8_t BTN_1_PIN = 10;
+const uint8_t BTN_2_PIN = 9;
+const uint8_t BTN_3_PIN = 8;
+const uint8_t BTN_4_PIN = 7;
+const uint8_t BTN_5_PIN = 6;
+const uint8_t BTN_6_PIN = 5;
+const uint8_t BTN_7_PIN = 4;
+const uint8_t BTN_8_PIN = 3;
+// ==== пины реле ====================================
+const uint8_t RELAY_1_PIN = 22; // A3
+const uint8_t RELAY_2_PIN = 21; // A2
+const uint8_t RELAY_3_PIN = 20; // A1
+const uint8_t RELAY_4_PIN = 19; // A0
+const uint8_t RELAY_5_PIN = 18; // A7
+const uint8_t RELAY_6_PIN = 17; // A6
+const uint8_t RELAY_7_PIN = 16;
+const uint8_t RELAY_8_PIN = 15;
 // ==== пин управления адресными светодиодами ========
-const uint8_t LEDS_DATA_PIN = 17; // A6;
+const uint8_t LEDS_DATA_PIN = 13;
 #endif
 
 // ==== массив кнопок ================================
