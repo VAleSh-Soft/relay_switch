@@ -117,6 +117,8 @@ void setup()
     pinMode(relay_pin[i], OUTPUT);
     btns[i].setVirtualClickOn();
     btns[i].setLongClickMode(LCM_ONLYONCE);
+    // отключение канала по удержанию кнопки в течение 2 секунд
+    btns[i].setTimeoutOfLongClick(2000);
     // т.к. двойной клик не используется, уменьшаем его интервал, чтобы ускорить реакцию на одиночный клик
     btns[i].setTimeoutOfDblClick(100);
 #ifdef USE_TOUCH_BUTTON
